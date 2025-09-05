@@ -1,5 +1,5 @@
 import SwiftUI
-//import ArgumentParser
+import Foundation
 
 // need to take cli args to set border colours etc
 
@@ -7,6 +7,9 @@ import SwiftUI
 // first get dimensions of window(s), then pass to rectangle dimensions
 
 // active vs inactive colour
+@MainActor 
+let testList = CGWindowListCopyWindowInfo(.optionOnScreenOnly, kCGNullWindowID)
+
 
 @MainActor
 func quit() {
@@ -23,9 +26,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 }
 
+// do for each loop over list for rects
 @main
 struct swiftborders: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    var winCount = Int(CFArrayGetCount(testList))
     var body: some Scene {
+        WindowGroup {
+            Rectangle()
+                .background(.clear)
+                .border(.white)
+                .shadow(radius: 10)
+                .frame(maxWidth: 240)
+                .frame(maxHeight: 150)
+        }
+        .windowStyle(.plain)
+        .windowResizability(.contentSize)
     }
 }
