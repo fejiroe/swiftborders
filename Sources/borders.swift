@@ -22,39 +22,67 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 }
 
 @MainActor
+// func getWindowList() {
 func getWindowList() -> CFArray? {
-    let windowList = CGWindowListCopyWindowInfo(.optionOnScreenOnly, kCGNullWindowID)
+    let windowsCFArray = CGWindowListCopyWindowInfo(.optionOnScreenOnly, kCGNullWindowID)
     return windowList
 }
 
-/*
-// need some sort of listener/callback for window changes (new/delete/move/resize).
-// consider multiple functions
-func updateWindowList() {
-
+func setColour() {
+    // ideally take argument for active/inactive
 }
-*/
+
+// /*
+// need some sort of listener/callback for window changes (new/delete/move/resize).
+// consider multiple functions. updateWinCount() ?
+@MainActor
+func updateWinList() {
+    windowList = getWindowList()
+}
+// */
 
 @MainActor
 var windowList = getWindowList()
 // CGWindowBounds: Height, Width, X, Y
 // do for each loop over list for rects
 // active vs inactive colour
+@MainActor
+func printWindowInfo() -> Void {
+    var winCount = Int(CFArrayGetCount(windowList))
+    // var winDicts: [Any]
+    // var currentWindowProperties: Any
+    for window in 0...winCount {
+       // let input = CFArrayGetValueAtIndex(windowList, window)
+       // winDicts.append(input)
+       // let output = winDicts[window]
+       // print(input)
+       // currentWindowProperties = input
+       // NSLog("%@", CFDictionaryGetValue(input, kCGWindowBounds))
+       // NSLog("%@", input)
+       // var test = CFDictionaryGetValue(kCGWindowBounds, input)
+       // let ref: CFDictionary = CFArrayGetValueAtIndex(windowList, window)
+    }
+}
+
 @main
 struct swiftborders: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    var winCount = Int(CFArrayGetCount(windowList))
+    // var winCount = Int(CFArrayGetCount(windowList))
     var body: some Scene {
         WindowGroup {
-            ForEach(0..<winCount) { window in
-                //if let winProperties = CFArrayGetValueAtIndex(windowList, window) {
+            // ForEach(0..<winCount) { window in windowList // find way to cast array ?
+                // if let winProperties = CFArrayGetValueAtIndex(windowList, window) {
                 Rectangle()
                     .frame(maxWidth: 240)
                     .frame(maxHeight: 150)
                     .background(.clear)
                     .border(.white)
                     .shadow(radius: 10)
-            }
+                    .onAppear {
+                        updateWinList()
+                        printWindowInfo()
+                    }
+            // }
         }
         .windowStyle(.plain)
         .windowResizability(.contentSize)
