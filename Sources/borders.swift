@@ -17,7 +17,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 }
 
 func testFunc() {
-    // switch to AX or NS window approach instead?
     func getWinArray() -> CFArray? {
         let windowsCFArray = CGWindowListCopyWindowInfo(.optionOnScreenOnly, kCGNullWindowID)
             return windowsCFArray
@@ -27,15 +26,23 @@ func testFunc() {
 
     func toRect() {
             for window in 0...winCount {
-                 let dictRef = CFArrayGetValueAtIndex(winArray, window) as! CFDictionary?
-                 // let key: String = "kCGWindowBounds"
+                 if let ref = CFArrayGetValueAtIndex(winArray, window) {
+                    let dict = ref.load(as: CFDictionary?.self)
+                    let key: String = "kCGWindowBounds"
+                    if let winBounds = CFDictionaryGetValue(dict, key) {
+                    print(winBounds)
+                    }
+                 }
+                 // print(dictRef)
                  // let p: UnsafeRawPointer = key
                     // if let dict = dictRef as? [AnyHashable: Any] {
                     //     print(dict[kCGWindowBounds])
                     // }
-                 CFDictionaryGetValue(dictRef, "kCGWindowBounds" as? UnsafeRawPointer)
+                 // CFDictionaryGetValue(dictRef, "kCGWindowBounds" as! UnsafeRawPointer)
                 // var winRect: UnsafeMutablePointer<CGRect>
                 // CGRectMakeWithDictionaryRepresentation(winProperties, winRect)
+                // CFDictionaryGetValue(dictRef?, key)
+                // dictRef?.deallocate()
             }
     }
 
