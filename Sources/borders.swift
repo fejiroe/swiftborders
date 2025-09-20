@@ -27,10 +27,13 @@ func testFunc() {
 
     func toRect() {
             for window in 0...winCount {
-                // let dictRef = CFArrayGetValueAtIndex(winArray, window) as CFDictionary?
-                // if let dict = dictRef as? [String: AnyObject] {
-                    // print(dict["kCGWindowBounds"]}
-                // CFDictionaryGetValue(dictRef, kCGWindowBounds)
+                 let dictRef = CFArrayGetValueAtIndex(winArray, window) as! CFDictionary?
+                 // let key: String = "kCGWindowBounds"
+                 // let p: UnsafeRawPointer = key
+                    // if let dict = dictRef as? [AnyHashable: Any] {
+                    //     print(dict[kCGWindowBounds])
+                    // }
+                 CFDictionaryGetValue(dictRef, "kCGWindowBounds" as? UnsafeRawPointer)
                 // var winRect: UnsafeMutablePointer<CGRect>
                 // CGRectMakeWithDictionaryRepresentation(winProperties, winRect)
             }
@@ -38,6 +41,7 @@ func testFunc() {
 
     func printWin() {
     }
+    toRect()
 }
 
 @main struct swiftborders: App {
