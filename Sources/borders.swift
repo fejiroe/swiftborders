@@ -25,25 +25,16 @@ func testFunc() {
     let winCount = Int(CFArrayGetCount(winArray))
 
     func toRect() {
-            for window in 0...winCount {
-                 if let ref = CFArrayGetValueAtIndex(winArray, window) {
-                    let dict = ref.load(as: CFDictionary?.self)
-                    let key: String = "kCGWindowBounds"
-                    if let winBounds = CFDictionaryGetValue(dict, key) {
+        for window in 0...winCount {
+            if let ref = CFArrayGetValueAtIndex(winArray, window) {
+                // let dict = ref.load(as: CFDictionary?.self)
+                let dict: CFDictionary? = unsafeBitCast(ref, to: CFDictionary?.self)
+                let key: String = "kCGWindowBounds"
+                if let winBounds = CFDictionaryGetValue(dict, key) {
                     print(winBounds)
-                    }
-                 }
-                 // print(dictRef)
-                 // let p: UnsafeRawPointer = key
-                    // if let dict = dictRef as? [AnyHashable: Any] {
-                    //     print(dict[kCGWindowBounds])
-                    // }
-                 // CFDictionaryGetValue(dictRef, "kCGWindowBounds" as! UnsafeRawPointer)
-                // var winRect: UnsafeMutablePointer<CGRect>
-                // CGRectMakeWithDictionaryRepresentation(winProperties, winRect)
-                // CFDictionaryGetValue(dictRef?, key)
-                // dictRef?.deallocate()
+                }
             }
+        }
     }
 
     func printWin() {
@@ -56,7 +47,7 @@ func testFunc() {
         // var windowList: CFArray?
     var body: some Scene {
         WindowGroup {
-            // ForEach(0..<winCount) { window in windowList // find way to cast array ?
+            // ForEach(0..<winCount) { window in windowList
                 Rectangle()
                     .frame(maxWidth: 240)
                     .frame(maxHeight: 150)
