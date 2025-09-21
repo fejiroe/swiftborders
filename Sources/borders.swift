@@ -24,22 +24,26 @@ func testFunc() {
     let winArray: CFArray? = getWinArray()
     let winCount = Int(CFArrayGetCount(winArray))
 
-    func toRectBounds() {
+    func testFunc() {
         for window in 0...winCount {
-            if let ref = CFArrayGetValueAtIndex(winArray, window) {
-                let dict: CFDictionary? = unsafeBitCast(ref, to: CFDictionary?.self)
-                print(dict)
-                let key: String = "kCGWindowBounds"
-                //  if let winBounds = CFDictionaryGetValue(dict, key) {
-                   //  print(winBounds)
-                // }
-            }
+            let ref = CFArrayGetValueAtIndex(winArray, window)
+            let dict: CFDictionary? = unsafeBitCast(ref, to: CFDictionary?.self)
+            let key: String = "kCGWindowBounds"
+            let winBoundsRef = CFDictionaryGetValue(dict, key)
+                    // let winBounds = unsafeBitCast(winBoundsRef, to: CFDictionary?.self)
+            print(winBoundsRef as Any)
         }
     }
 
     func printWin() {
+        for window in 0...winCount {
+            if let ref = CFArrayGetValueAtIndex(winArray, window) {
+                let dict: CFDictionary? = unsafeBitCast(ref, to: CFDictionary?.self)
+                print(dict)
+            }
+        }
     }
-    toRectBounds()
+    testFunc()
 }
 
 @main struct swiftborders: App {
