@@ -1,34 +1,40 @@
 import Foundation
 import SwiftUI
 
+struct Window {
+    let bounds: CGRect
+    let pid: Int
+    let layer: Int
+}
+
+func getWinArray() -> CFArray? {
+    let winCFArray = CGWindowListCopyWindowInfo(.optionOnScreenOnly, kCGNullWindowID)
+    return winCFArray
+}
+
 @MainActor
-func test() {
-    func getWinArray() -> CFArray? {
-        let winCFArray = CGWindowListCopyWindowInfo(.optionOnScreenOnly, kCGNullWindowID)
-        return winCFArray
-    }
+func getWindows() -> [Window] {
     let winArray: CFArray? = getWinArray()
     let winCount = Int(CFArrayGetCount(winArray))
 
-    func getWinRects() {
+    func getWinRects() -> [Window] {
+        var winRects: [Window] = []
         for window in 0...winCount {
             let ref = CFArrayGetValueAtIndex(winArray, window)
-            let winElement: CFDictionary = unsafeBitCast(ref, to: CFDictionary.self)
-            let winBoundsRef = CFDictionaryGetValue(winElement, "kCGWindowBounds") // null pointer ?
-            let winBounds = unsafeBitCast(winBoundsRef, to: CFDictionary.self)
-            // var cgRect = CGRect.zero
-            // if CGRectMakeWithDictionaryRepresentation(winBounds as CFDictionary?, &cgRect) {
-            let cgRect = CGRect.init(dictionaryRepresentation: winBounds)
-            // let nsRect = NSRectToCGRect(cgRect)
-            print(cgRect?.height as Any)
-            // if let winBounds: [String: Int]? = (winElement as NSDictionary)["kCGWindowBounds"] {
-                // var height = (winBounds!)["Height"]
-                // print(height as Any)
-            // }
-            // if let winBounds = (winElement as NSDictionary)["kCGWindowBounds"] {
-            //     print(winBounds)
-            // }
+            let winCFDict: CFDictionary = unsafeBitCast(ref, to: CFDictionary.self)
+            let winDict = winCFDict as? [String: Any]
+            let winBounds = winDict!["kCGWindowBounds"] as? [String: Any]
+            let xPos = winBounds!["X"] as? CGFloat
+            let yPos = winBounds!["Y"] as? CGFloat
+            let height = winBounds!["Height"] as? CGFloat
+            let width = winBounds!["Width"] as? CGFloat
+            let boundsRect = CGRect.init(x: xPos!, y: yPos!, width: width!, height: height!)
+            let winPid = winDict!["kCGWindowOwnerPID"] as? Int
+            let winLayer = winDict!["kCGWindowLayer"] as? Int
+            let winInfo: Window = Window(bounds: boundsRect, pid: winPid!, layer: winLayer!)
+            winRects.append(winInfo)
         }
+        return winRects
     }
-    getWinRects()
+    return getWinRects()
 }

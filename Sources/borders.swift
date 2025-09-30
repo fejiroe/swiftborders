@@ -1,23 +1,20 @@
 import SwiftUI
 import Foundation
 
-func testFunc() {
-}
-
 struct BorderView: View {
-        // var windowList: CFArray?
+    @State var winList: [Window] = getWindows()
     var body: some View {
-            // ForEach(0..<winCount) { window in windowList
-                Rectangle()
-                    .frame(maxWidth: 240)
-                    .frame(maxHeight: 150)
-                    .background(.clear)
-                    .border(.white)
-                    .shadow(radius: 10)
-                    .onAppear {
-                        testFunc()
-                        test()
-                    }
-                // }
+        // var winCount = winList.count
+        // ForEach(0..<winCount) { window in winList
+            Rectangle()
+                // .frame(maxWidth: window.width)
+                // .frame(maxHeight: window.height)
+                .background(.clear)
+                .border(.white)
+                .shadow(radius: 10)
+                .onAppear {
+                    print(winList as Any)
+                }
+        // }
     }
 }
