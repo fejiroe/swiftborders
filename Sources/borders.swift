@@ -4,7 +4,7 @@ import Foundation
 struct BorderView: View {
     @State var winList: [Window] = getWindows()
     var body: some View {
-        // var winCount = winList.count
+        var winCount = winList.count
         // ForEach(0..<winCount) { window in winList
             Rectangle()
                 // .frame(maxWidth: window.width)
