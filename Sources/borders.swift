@@ -5,16 +5,19 @@ struct BorderView: View {
     @State var winList: [Window] = getWindows()
     var body: some View {
         var winCount = winList.count
-        // ForEach(0..<winCount) { window in winList
-            Rectangle()
-                // .frame(maxWidth: window.width)
-                // .frame(maxHeight: window.height)
-                .background(.clear)
-                .border(.white)
-                .shadow(radius: 10)
-                .onAppear {
-                    print(winList as Any)
-                }
-        // }
+        ZStack {
+            ForEach(0..<winCount) { index in
+                let window = winList[index]
+                Rectangle()
+                    .frame(maxWidth: window.bounds.width)
+                    .frame(maxHeight: window.bounds.height)
+                    .background(.clear)
+                    .border(.white)
+                    .shadow(radius: 10)
+                    .onAppear {
+                        print(winList as Any)
+                    }
+            }
+        }
     }
 }

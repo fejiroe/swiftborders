@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-struct Window { // make this conform to view
+struct Window {
     let bounds: CGRect
     let pid: Int
     let layer: Int
@@ -33,7 +33,7 @@ func getWindows() -> [Window] {
                 let winLayer = winDict!["kCGWindowLayer"] as? Int
                 let winInfo: Window = Window(bounds: boundsRect, pid: winPid!, layer: winLayer!)
                 winRects.append(winInfo)
-                // print(winRects[window] as Any) /* works */
+                print(winRects[window] as Any) /* works */
             }
         }
         return winRects
