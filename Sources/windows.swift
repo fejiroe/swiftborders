@@ -2,9 +2,15 @@ import Foundation
 import SwiftUI
 
 struct Window {
-    let bounds: CGRect
+    var bounds: CGRect
     let pid: Int
-    let layer: Int
+    var layer: Int
+    
+    init(bounds: CGRect, pid: Int, layer: Int) {
+        self.bounds = bounds
+        self.pid = pid
+        self.layer = layer
+    }
 }
 
 func getWinArray() -> CFArray? {
@@ -23,17 +29,19 @@ func getWindows() -> [Window] {
             let ref = CFArrayGetValueAtIndex(winArray, window)
             if let winCFDict = unsafeBitCast(ref, to: CFDictionary?.self) {
                 let winDict = winCFDict as? [String: Any]
-                let winBounds = winDict!["kCGWindowBounds"] as? [String: Any]
-                let xPos = winBounds!["X"] as? CGFloat
-                let yPos = winBounds!["Y"] as? CGFloat
-                let height = winBounds!["Height"] as? CGFloat
-                let width = winBounds!["Width"] as? CGFloat
-                let boundsRect = CGRect.init(x: xPos!, y: yPos!, width: width!, height: height!)
-                let winPid = winDict!["kCGWindowOwnerPID"] as? Int
-                let winLayer = winDict!["kCGWindowLayer"] as? Int
-                let winInfo: Window = Window(bounds: boundsRect, pid: winPid!, layer: winLayer!)
-                winRects.append(winInfo)
-                print(winRects[window] as Any) /* works */
+                if let boundsDict = winDict!["kCGWindowBounds"] as? [String: Any] {
+                    if let xPos = boundsDict["X"] as? CGFloat,
+                       let yPos = boundsDict["Y"] as? CGFloat,
+                       let width = boundsDict["Width"] as? CGFloat,
+                       let height = boundsDict["Height"] as? CGFloat {
+                        let boundsRect = CGRect(x: xPos, y: yPos, width: width, height: height)
+                        if let pid = winDict!["kCGWindowOwnerPID"] as? Int,
+                           let layer = winDict!["kCGWindowLayer"] as? Int {
+                            let winInfo: Window = Window(bounds: boundsRect, pid: pid, layer: layer)
+                            winRects.append(winInfo)
+                        }
+                    }
+                }
             }
         }
         return winRects
