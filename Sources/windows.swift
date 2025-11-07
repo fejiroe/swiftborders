@@ -27,7 +27,7 @@ func getWindows() -> [Window] {
               let yPos = boundsDict["Y"] as? CGFloat,
               let width = boundsDict["Width"] as? CGFloat,
               let height = boundsDict["Height"] as? CGFloat,
-              let pid   = dict[kCGWindowOwnerPID as String] as? Int,
+              let pid = dict[kCGWindowOwnerPID as String] as? Int,
               let layer = dict[kCGWindowLayer as String] as? Int
         else { return nil }
 
