@@ -8,30 +8,27 @@ import SwiftUI
 final class AppDelegate: NSObject, NSApplicationDelegate {
     var window: NSWindow!
     func applicationDidFinishLaunching(_ notification: Notification) {
-        let screen = NSScreen.main!
-        let frame  = screen.frame   // full screen rectangle
-
+        let frame = NSScreen.main!.frame
         window = NSWindow(
             contentRect: frame,
             styleMask: [.borderless],
             backing: .buffered,
             defer: false)
-
-        window.titlebarAppearsTransparent = true
-        window.isOpaque = false
-        window.backgroundColor = .clear
-        window.center()
-        window.isMovable = false
         window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         window.contentView = NSHostingView(rootView:
             BorderView()
                 .ignoresSafeArea())
+        window.titlebarAppearsTransparent = true
         window.makeKeyAndOrderFront(nil)
+        window.level = .statusBar
+        window.backgroundColor = .clear
+        window.isOpaque = false
+        window.isMovable = false
+        window.center()
     }
 }
 
 @main struct swiftborders: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    var body: some Scene {
-    }
+    var body: some Scene {}
 }
