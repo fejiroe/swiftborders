@@ -5,21 +5,24 @@ struct BorderView: View {
     @State private var winList: [Window] = getWindows().filter {$0.layer == 0}
     var cornerRadius: CGFloat = 0
     var shadowRadius: CGFloat = 10
-    var activeColor = Color.white
-    var inactiveColor = Color.blue
+    var activeColor = Color.red
+    var inactiveColor = Color.white
+    @State var activeWin: Window? = getActiveWin()
+    let timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
     var body: some View {
-        GeometryReader { geo in
             ForEach(winList, id: \.pid) { window in
                 RoundedRectangle(cornerRadius: cornerRadius)
-                    .stroke(activeColor, lineWidth: 1)
+                    // need to add padding, currently draws on window not around
+                    .stroke(window.pid == activeWin?.pid ? activeColor : inactiveColor, lineWidth: 1)
                     .frame(width: window.bounds.width)
                     .frame(height: window.bounds.height)
                     .position(x: window.bounds.midX,
-                              y: geo.size.height - window.bounds.midY)
+                            y: window.bounds.midY)
                     .background(.clear)
                     .shadow(radius: shadowRadius)
-                    .onAppear {
-                    }
+                    .onReceive(timer) { _ in
+                        winList = getWindows().filter {$0.layer==0}
+                        activeWin = getActiveWin()
             }
         }
     }

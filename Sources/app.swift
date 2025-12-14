@@ -1,9 +1,7 @@
 import Foundation
 import SwiftUI
 
-@MainActor func quit() {
-    NSApp.terminate(nil)
-}
+@MainActor func quit() {NSApp.terminate(nil)}
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
     var window: NSWindow!
@@ -14,7 +12,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             styleMask: [.borderless],
             backing: .buffered,
             defer: false)
-        window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
+        window.collectionBehavior = [.canJoinAllSpaces,
+                                     .fullScreenAuxiliary]
         window.contentView = NSHostingView(rootView:
             BorderView()
                 .ignoresSafeArea())

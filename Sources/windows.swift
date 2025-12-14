@@ -1,3 +1,4 @@
+import ApplicationServices
 import Foundation
 import SwiftUI
 
@@ -8,7 +9,6 @@ struct Window {
     var id: Self {self}
 }
 
-@MainActor
 func getWindows() -> [Window] {
     guard let winCFArray = CGWindowListCopyWindowInfo(.optionOnScreenOnly, kCGNullWindowID) else {
         return []
@@ -30,4 +30,10 @@ func getWindows() -> [Window] {
         let bounds = CGRect(x: xPos, y: yPos, width: width, height: height)
         return Window(bounds: bounds, pid: pid, layer: layer)
     }
+}
+
+func getActiveWin() -> Window? {
+    guard let frontApp = NSWorkspace.shared.frontmostApplication else {return nil}
+    let pid = frontApp.processIdentifier
+    return getWindows().first(where: {$0.pid == pid})
 }
