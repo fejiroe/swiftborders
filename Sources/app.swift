@@ -36,7 +36,6 @@ object: nil)
                    config.$enabledState
                    .receive(on: RunLoop.main)
                    .sink {enabled in window.isVisible = enabled}
-                   .store(in: &cancellables)
                  */
     }
 }
