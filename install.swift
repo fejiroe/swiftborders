@@ -40,10 +40,10 @@ func execute(_ command: String) {
     }
 }
 
-if execute("swift build") {
-    // if shell("") {
+if execute("swift build -c release") {
+    // if shell("cp ./.build/NAMEOFEXECUTABLE /usr/local/bin/NAMEOFEXECUTABLE") {
     // copy the executable to /usr/local/bin or whatever
-    //   if shell("") {
+    //   if shell("cp ./LaunchAgents/ ///") {
     //      // copy launch agent plist
     //     }
     // } 
