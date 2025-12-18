@@ -40,15 +40,14 @@ func execute(_ command: String) {
     }
 }
 
-if execute("swift build -c release") {
-    // if shell("cp ./.build/NAMEOFEXECUTABLE /usr/local/bin/NAMEOFEXECUTABLE") {
-    // copy the executable to /usr/local/bin or whatever
-    //   if shell("cp ./LaunchAgents/ ///") {
+ execute("swift build -c release -Xswiftc -cross-module-optimization")
+    // if let path = execute("swit bulid --show-bin-path -c release") { // get full path of release build
+execute("sudo cp .build/arm64-macos-release/swiftborders /usr/local/bin/swiftborders") // dont take password in plain text please looooool
+print("install success")
+            // if shell("cp ./LaunchAgents/ ///") {
     //      // copy launch agent plist
     //     }
-    // } 
-}
-
+    // }
 /* just found this, will reference some ideas for the install
 https://github.com/yonaskolb/Mint/blob/master/Sources/MintKit/Mint.swift
 */
