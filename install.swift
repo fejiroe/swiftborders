@@ -48,3 +48,7 @@ if execute("swift build -c release") {
     //     }
     // } 
 }
+
+/* just found this, will reference some ideas for the install
+https://github.com/yonaskolb/Mint/blob/master/Sources/MintKit/Mint.swift
+*/
