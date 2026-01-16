@@ -40,9 +40,9 @@ func execute(_ command: String) {
     }
 }
 
- execute("swift build -c release -Xswiftc -cross-module-optimization")
+execute("swift build -c release -Xswiftc -cross-module-optimization")
     // if let path = execute("swit bulid --show-bin-path -c release") { // get full path of release build
-execute("sudo cp .build/arm64-macos-release/swiftborders /usr/local/bin/swiftborders") // dont take password in plain text please looooool
+execute("sudo cp .build/release/swiftborders /usr/local/bin/swiftborders") // dont take password in plain text please looooool
 print("install success")
             // if shell("cp ./LaunchAgents/ ///") {
     //      // copy launch agent plist
