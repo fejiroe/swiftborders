@@ -9,7 +9,7 @@ struct BorderView: View {
         GeometryReader { geo in
             ForEach(observer.winList, id: \.pid) { window in
                 let borderColour =
-                    window.pid == observer.activeWin?.pid
+                    window.windowNumber == observer.activeWin?.windowNumber
                     ? config.activeColor : config.inactiveColor
                 RoundedRectangle(cornerRadius: config.cornerRadius)
                     .stroke(borderColour, lineWidth: config.borderWidth)
