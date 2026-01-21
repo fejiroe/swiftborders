@@ -9,14 +9,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     let config = BorderConfig()
     private var cancellables = Set<AnyCancellable>()
     func applicationDidFinishLaunching(_ notification: Notification) {
-        /*
-           DistributedNotificationCenter.default()
-           addObserver(self,
-selector: #selector(handleConfigUpdate(_:)),
-name: BorderConfig.updateNotification,
-object: nil)
-         */
-        // if isService { return }
         let frame = NSScreen.main!.frame
         window = NSWindow(
             contentRect: frame,
@@ -53,7 +45,7 @@ object: nil)
             let cli = Cli()
             if args.contains("--start") {
                 cli.runLaunchCtl("bootstrap")
-            } else if args.contains("--start") {
+            } else if args.contains("--stop") {
                 cli.runLaunchCtl("bootout")
             }
             exit(0)

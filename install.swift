@@ -44,6 +44,7 @@ else {
 let binaryPath = "\(binDir)/swiftborders"
 print("✅ binary built at: \(binaryPath)")
 
+/* // this fails, permissions? says cp can't open source
 // copy to /usr/local/bin
 print("copying binary to /usr/local/bin…")
 let copy = run("/bin/zsh", arguments: ["cp", binaryPath, "/usr/local/bin/swiftborders"])
@@ -52,17 +53,27 @@ guard copy.exitCode == 0 else {
     exit(1)
 }
 print("✅ copied successfully.")
+*/
 
 // bootstrap the LaunchAgent
-print("bootstrapping launch agent…")
-let launchctl = run(
+print("enabling launch agent…")
+let enable = run(
+    "/bin/launchctl",
+    arguments: [
+        "enable", "gui/\(getuid())",
+    ])
+guard enable.exitCode == 0 else {
+    print("❌ launchAgent enable failed:\n\(enable.output ?? "")")
+    exit(1)
+}
+let bootstrap = run(  // seems to always fail with code 5, input/output error
     "/bin/launchctl",
     arguments: [
         "bootstrap", "gui/\(getuid())",
         "\(NSHomeDirectory())/Library/LaunchAgents/com.fejiroe.swiftborders.plist",
     ])
-guard launchctl.exitCode == 0 else {
-    print("❌ launchAgent bootstrap failed:\n\(launchctl.output ?? "")")
+guard bootstrap.exitCode == 0 else {
+    print("❌ launchAgent bootstrap failed:\n\(bootstrap.output ?? "")")
     exit(1)
 }
 print("✅ launchAgent loaded. show with:")
