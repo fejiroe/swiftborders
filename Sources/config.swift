@@ -13,7 +13,7 @@ final class BorderConfig: ObservableObject {
     init(
         enabled: Bool = true,
         active: Color = .blue,
-        inactive: Color = .white
+        inactive: Color = .gray
     ) {
         self.enabledState = enabled
         self.activeColor = Color(active)

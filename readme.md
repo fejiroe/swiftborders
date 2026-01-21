@@ -9,7 +9,7 @@ stop background service using "swiftborders --stop"
 todo:
 
 - fix broken install + launch agent
-- fix not highlighting inactive window(s) for multiple windows of the same app
 - config file
+- app whitelist or blacklist
 
 - bugs, testing

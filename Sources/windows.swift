@@ -1,4 +1,5 @@
 import ApplicationServices
+import Cocoa
 import Foundation
 import SwiftUI
 
@@ -34,9 +35,31 @@ func getWindows() -> [Window] {
     }
 }
 
-func getActiveWin() -> Window? {
+func focusedWindowID() -> CGWindowID? { /* requires accesibility permissions */
     guard let frontApp = NSWorkspace.shared.frontmostApplication else { return nil }
-    let pid = frontApp.processIdentifier
-    let windows = getWindows().filter { $0.pid == pid && $0.layer == 0 }
-    return windows.sorted(by: { $0.layer < $1.layer }).last
+    let kAXWindowNumberAttribute = "AXWindowNumber" as CFString
+
+    let appElem = AXUIElementCreateApplication(frontApp.processIdentifier)
+
+    var focusObj: CFTypeRef?
+    let result = AXUIElementCopyAttributeValue(
+        appElem,
+        kAXFocusedWindowAttribute as CFString,
+        &focusObj)
+    guard result == .success else { return nil }
+    guard let winRef = focusObj else { return nil }
+
+    var winNumObj: CFTypeRef?
+    let winResult = AXUIElementCopyAttributeValue(
+        winRef as! AXUIElement,
+        kAXWindowNumberAttribute as CFString,
+        &winNumObj)
+    guard winResult == .success, let num = winNumObj as? CGWindowID else { return nil }
+
+    return num
+}
+
+func getActiveWin() -> Window? {
+    guard let winID = focusedWindowID() else { return nil }
+    return getWindows().first(where: { $0.windowNumber == winID })
 }
