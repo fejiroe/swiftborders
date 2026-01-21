@@ -1,53 +1,72 @@
-/*
- install script,
- build exec,
- copy exec to local/bin
- install launch agent? (copy plist)
-*/
 import Foundation
 
 let fm = FileManager.default
-let dir = fm.currentDirectoryPath
+let cwd = fm.currentDirectoryPath
 
-func execute(_ command: String) {
+@discardableResult
+func run(_ launchPath: String, arguments: [String]) -> (output: String?, exitCode: Int32) {
     let task = Process()
+    task.launchPath = launchPath
+    task.arguments = arguments
+
     let pipe = Pipe()
-    let inPipe = Pipe()
-    task.arguments = ["-c", command]
-    task.launchPath = "/bin/zsh"
     task.standardOutput = pipe
     task.standardError = pipe
+
     do {
         try task.run()
-        task.waitUntilExit()
-        let outb = pipe.fileHandleForReading.readDataToEndOfFile()
-        let output = String(bytes: outb, encoding: .utf8)
-        if output != nil {
-            print(output as Any)
-        }
-        let filehandle = FileHandle(fileDescriptor: STDIN_FILENO)
-        filehandle.readabilityHandler = { handle in
-            let inData = handle.availableData
-            if inData.count > 0 {
-                inPipe.fileHandleForWriting.write(inData)
-                if output != nil {
-                print(output as Any)
-        }
-            }
-        }
     } catch {
-        print("cmd failed")
+        return (nil, 1)
     }
+
+    let data = pipe.fileHandleForReading.readDataToEndOfFile()
+    task.waitUntilExit()
+
+    return (String(data: data, encoding: .utf8), task.terminationStatus)
 }
 
-execute("swift build -c release -Xswiftc -cross-module-optimization")
-    // if let path = execute("swit bulid --show-bin-path -c release") { // get full path of release build
-execute("sudo cp .build/release/swiftborders /usr/local/bin/swiftborders") // dont take password in plain text please looooool
-print("install success")
-            // if shell("cp ./LaunchAgents/ ///") {
-    //      // copy launch agent plist
-    //     }
-    // }
-/* just found this, will reference some ideas for the install
-https://github.com/yonaskolb/Mint/blob/master/Sources/MintKit/Mint.swift
-*/
+// build
+print("building in release mode…")
+let build = run("/usr/bin/swift", arguments: ["build", "-c", "release"])
+guard build.exitCode == 0 else {
+    print("❌ build failed:\n\(build.output ?? "")")
+    exit(1)
+}
+
+// find the binary path
+let showBin = run("/usr/bin/swift", arguments: ["build", "--show-bin-path", "-c", "release"])
+guard let binDir = showBin.output?.trimmingCharacters(in: .whitespacesAndNewlines),
+    !binDir.isEmpty
+else {
+    print("❌ couldn't find the build output directory.")
+    exit(1)
+}
+let binaryPath = "\(binDir)/swiftborders"
+print("✅ binary built at: \(binaryPath)")
+
+// copy to /usr/local/bin
+print("copying binary to /usr/local/bin…")
+let copy = run("/bin/zsh", arguments: ["cp", binaryPath, "/usr/local/bin/swiftborders"])
+guard copy.exitCode == 0 else {
+    print("❌ copy failed:\n\(copy.output ?? "")")
+    exit(1)
+}
+print("✅ copied successfully.")
+
+// bootstrap the LaunchAgent
+print("bootstrapping launch agent…")
+let launchctl = run(
+    "/bin/launchctl",
+    arguments: [
+        "bootstrap", "gui/\(getuid())",
+        "\(NSHomeDirectory())/Library/LaunchAgents/com.fejiroe.swiftborders.plist",
+    ])
+guard launchctl.exitCode == 0 else {
+    print("❌ launchAgent bootstrap failed:\n\(launchctl.output ?? "")")
+    exit(1)
+}
+print("✅ launchAgent loaded. show with:")
+print("\tlaunchctl list | grep com.fejiroe.swiftborders")
+// unload launch agent
+// let bootout = run("/bin/launchctl", arguments: ["bootout", "gui/\(getuid())",
+//                                                 "\(NSHomeDirectory())/Library/LaunchAgents/com.fejiroe.swiftborders.plist"])

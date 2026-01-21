@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import SwiftUI
 
@@ -6,6 +7,7 @@ import SwiftUI
 final class AppDelegate: NSObject, NSApplicationDelegate {
     var window: NSWindow!
     let config = BorderConfig()
+    private var cancellables = Set<AnyCancellable>()
     func applicationDidFinishLaunching(_ notification: Notification) {
         /*
            DistributedNotificationCenter.default()
@@ -14,6 +16,7 @@ selector: #selector(handleConfigUpdate(_:)),
 name: BorderConfig.updateNotification,
 object: nil)
          */
+        // if isService { return }
         let frame = NSScreen.main!.frame
         window = NSWindow(
             contentRect: frame,
@@ -22,7 +25,7 @@ object: nil)
             defer: false)
         window.collectionBehavior = [
             .canJoinAllSpaces,
-            .fullScreenAuxiliary
+            .fullScreenAuxiliary,
         ]
         window.contentView = NSHostingView(
             rootView:
@@ -38,10 +41,23 @@ object: nil)
         config.$enabledState
             .receive(on: RunLoop.main)
             .sink { enabled in self.window.contentView?.isHidden = !enabled }
+            .store(in: &cancellables)
     }
 }
 
 @main struct swiftborders: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    init() {
+        let args = CommandLine.arguments
+        if args.contains("--start") || args.contains("--stop") {
+            let cli = Cli()
+            if args.contains("--start") {
+                cli.runLaunchCtl("bootstrap")
+            } else if args.contains("--start") {
+                cli.runLaunchCtl("bootout")
+            }
+            exit(0)
+        }
+    }
     var body: some Scene {}
 }
