@@ -34,6 +34,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .receive(on: RunLoop.main)
             .sink { enabled in self.window.contentView?.isHidden = !enabled }
             .store(in: &cancellables)
+        ensureAccessibilityPermission()
     }
 }
 
