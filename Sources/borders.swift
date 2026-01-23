@@ -7,7 +7,7 @@ struct BorderView: View {
     @StateObject private var observer = WindowObserver()
     var body: some View {
         GeometryReader { geo in
-            ForEach(observer.winList, id: \.pid) { window in
+            ForEach(observer.winList, id: \.windowNumber) { window in
                 let borderColour =
                     window.windowNumber == observer.activeWin?.windowNumber
                     ? config.activeColor : config.inactiveColor
