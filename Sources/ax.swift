@@ -4,7 +4,7 @@ import Foundation
 func ensureAccessibilityPermission() {
     let options =
         [
-            "AXTrustetCheckOptionPrompt": true
+            "AXTrustedCheckOptionPrompt": true
         ] as CFDictionary
     let trusted = AXIsProcessTrustedWithOptions(options)
     if !trusted {
